@@ -1,0 +1,13 @@
+import api from '../../api/axios'
+export const getEntryPermissions = (params) => api.get('/entry-permissions', { params })
+export const getEntryPermissionsInbox = () => api.get('/entry-permissions/inbox')
+export const getEntryPermission = (id) => api.get(`/entry-permissions/${id}`)
+export const createEntryPermission = (data) => api.post('/entry-permissions', data)
+export const approveEntryPermission = (id) => api.patch(`/entry-permissions/${id}/approve`)
+export const rejectEntryPermission = (id) => api.patch(`/entry-permissions/${id}/reject`)
+export const updateEntryPermission = (id, data) => api.put(`/entry-permissions/${id}`, data)
+export const deleteEntryPermission = (id) => api.delete(`/entry-permissions/${id}`)
+export const getPermissionGuests = (permId) => api.get(`/entry-permissions/${permId}/guests`)
+export const addPermissionGuest = (permId, data) => api.post(`/entry-permissions/${permId}/guests`, data)
+export const updateGuestCin = (permId, guestId, data) => api.patch(`/entry-permissions/${permId}/guests/${guestId}/cin`, data)
+export const checkinGuest = (permId, id, data = {}) => api.patch(`/entry-permissions/${permId}/guests/${id}/checkin`, data)

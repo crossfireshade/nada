@@ -1,0 +1,207 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Cairo:wght@300;400;500;600;700&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html { @apply bg-slate-50 text-slate-800 dark:bg-gray-900 dark:text-slate-200; }
+  [dir="rtl"] body { font-family: 'Cairo', sans-serif; }
+  [dir="ltr"] body { font-family: 'Inter', sans-serif; }
+}
+
+@layer components {
+  .btn-primary { @apply bg-primary hover:bg-primary-dark text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200; }
+  .btn-secondary { @apply bg-white hover:bg-slate-50 text-slate-700 font-medium py-2 px-4 rounded-lg border border-slate-200 transition-colors duration-200 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-slate-200 dark:border-gray-600; }
+  .btn-danger { @apply bg-red-500 hover:bg-red-600 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200; }
+  .card { @apply bg-white rounded-xl shadow-sm p-6 dark:bg-gray-800 dark:shadow-gray-900/50; }
+  .form-input { @apply w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary dark:bg-gray-700 dark:border-gray-600 dark:text-slate-200 dark:placeholder-slate-400; }
+  .form-label { @apply block text-sm font-medium text-slate-700 mb-1 dark:text-slate-300; }
+  /* Login page: always light mode regardless of dark theme */
+  .login-card .form-input { @apply !bg-white !border-slate-200 !text-slate-900 !placeholder-slate-400; }
+  .login-card .form-label { @apply !text-slate-700; }
+  .table-header { @apply px-4 py-3 text-start text-xs font-semibold text-slate-500 uppercase tracking-wider dark:text-slate-400; }
+  .table-cell { @apply px-4 py-3 text-sm text-slate-700 dark:text-slate-300; }
+}
+
+/* ── RTL global improvements ──────────────────────────────────────────────── */
+[dir="rtl"] .form-input { text-align: right; }
+[dir="rtl"] select.form-input { background-position: left 0.5rem center; padding-left: 2rem; padding-right: 0.75rem; }
+[dir="rtl"] input[type="number"] { text-align: right; }
+[dir="rtl"] input[type="time"] { direction: ltr; text-align: right; }
+
+/* Numbers and time strings inside RTL containers keep LTR rendering */
+[dir="rtl"] .tabular-nums { direction: ltr; unicode-bidi: embed; }
+
+/* ── Live pulse animation (box-shadow only — no layout impact) ── */
+@keyframes live-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.55), 0 4px 20px rgba(239, 68, 68, 0.35); }
+  50%       { box-shadow: 0 0 0 8px rgba(239, 68, 68, 0),  0 4px 20px rgba(239, 68, 68, 0.20); }
+}
+.animate-live-pulse {
+  animation: live-pulse 1.6s ease-in-out infinite;
+}
+
+/* ── Page setup ── */
+@page { size: A4 portrait; margin: 1.2cm 1cm; }
+
+@media print {
+  /* ── Utilities ─────────────────────────────── */
+  .print\:hidden { display: none !important; }
+
+  /* ── Hide scrollbars ────────────────────────── */
+  html, body { overflow: hidden !important; }
+  ::-webkit-scrollbar { display: none !important; }
+  * { scrollbar-width: none !important; }
+
+  /* ── Force background colors to render ─────── */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* ── Base reset ─────────────────────────────── */
+  body {
+    background: white !important;
+    font-size: 10pt;
+    color: #1e293b !important;
+    line-height: 1.4;
+  }
+  nav, aside, header { display: none !important; }
+
+  /* ── Hide ALL interactive controls ─────────── */
+  button, [role="button"] { display: none !important; }
+  input[type="file"],
+  input[type="radio"],
+  input[type="checkbox"] { display: none !important; }
+
+  /* ── Form inputs: clean underline style ─────── */
+  input:not([type="radio"]):not([type="checkbox"]):not([type="file"]) {
+    border: none !important;
+    border-bottom: 0.5pt solid #94a3b8 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    padding-left: 2pt !important;
+    padding-right: 2pt !important;
+  }
+  textarea {
+    border: none !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    resize: none !important;
+  }
+
+  /* ── Hide action buttons hidden by hover/opacity ── */
+  .opacity-0 { display: none !important; }
+
+  /* ── Remove dark-mode backgrounds for print ─── */
+  .dark\:bg-gray-800, .dark\:bg-gray-700,
+  .dark\:bg-gray-900, .dark\:bg-slate-800 { background: white !important; }
+  .dark\:text-white, .dark\:text-slate-200,
+  .dark\:text-slate-300 { color: #1e293b !important; }
+  .dark\:border-gray-700, .dark\:border-gray-600 {
+    border-color: #cbd5e1 !important;
+  }
+
+  /* ── Full-width layout ────────────────────────── */
+  .max-w-6xl {
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  .overflow-hidden { overflow: visible !important; }
+
+  /* ── Darken light borders for visibility ──────── */
+  .border-slate-100 { border-color: #cbd5e1 !important; }
+  .border-slate-200 { border-color: #94a3b8 !important; }
+
+  /* ── Table improvements ───────────────────────── */
+  table { border-collapse: collapse !important; width: 100% !important; }
+  th, td { padding: 5pt 6pt !important; font-size: 9pt; }
+
+  /* ── Remove decorative shadows / reduce corners ── */
+  .shadow-sm, .shadow { box-shadow: none !important; }
+  .rounded-xl { border-radius: 4pt !important; }
+  .rounded-lg  { border-radius: 3pt !important; }
+  .rounded-t-xl { border-radius: 4pt 4pt 0 0 !important; }
+  .rounded-b-xl { border-radius: 0 0 4pt 4pt !important; }
+
+  /* ── Avoid page breaks inside rows & sections ─── */
+  tr { page-break-inside: avoid; }
+  .space-y-5 > * { page-break-inside: avoid; }
+
+  /* ── Section spacing for print ─────────────────── */
+  .space-y-5 > * + * { margin-top: 10pt !important; }
+
+  /* ── Info cards (Producer/Date/Duration): readable in print ── */
+  .info-card-print {
+    background: white !important;
+    color: #1e293b !important;
+    border: 1pt solid #cbd5e1 !important;
+  }
+  .info-card-print input {
+    color: #1e293b !important;
+    border-bottom-color: #94a3b8 !important;
+  }
+  .info-card-print label {
+    color: #475569 !important;
+    opacity: 1 !important;
+  }
+  .info-card-print p {
+    color: #1e293b !important;
+  }
+  .info-card-print .opacity-80 {
+    opacity: 1 !important;
+    color: #64748b !important;
+  }
+
+  /* ── Song/section gradient header → solid sky for print ── */
+  .song-header-bar {
+    background: #0ea5e9 !important;
+    color: white !important;
+    padding: 5pt 10pt !important;
+    border-radius: 3pt 3pt 0 0 !important;
+  }
+
+  /* ── Sky-500 table header for print ──────────── */
+  .bg-sky-500, .bg-sky-400 {
+    background-color: #0ea5e9 !important;
+    color: white !important;
+  }
+
+  /* ── Songs section: clean card list ─────────────── */
+  .border-dashed { border-style: solid !important; border-color: #e2e8f0 !important; }
+
+  /* ── Hide empty state / add-form placeholders ────── */
+  .border-dashed.flex { display: none !important; }
+
+  /* ── Guest photos: ensure they render in print ───── */
+  img {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    max-width: 100% !important;
+  }
+  img.rounded-full {
+    width: 28pt !important;
+    height: 28pt !important;
+    border-radius: 50% !important;
+  }
+
+  /* ── Notes/Remarques: ensure yellow background ───── */
+  .bg-yellow-50 {
+    background-color: #fefce8 !important;
+  }
+  .border-yellow-200 {
+    border-color: #fde68a !important;
+  }
+
+  /* ── Progress bar: visible in print ────────────── */
+  .bg-green-500 { background-color: #22c55e !important; }
+  .bg-green-100 { background-color: #dcfce7 !important; }
+
+  /* ── Download links: hide in print ─────────────── */
+  a[download] { display: none !important; }
+
+  /* ── Phone icon badge overlay: hide in print ───── */
+  .ring-2 { display: none !important; }
+}
