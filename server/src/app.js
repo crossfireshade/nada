@@ -27,9 +27,17 @@ const settingRoutes = require('./routes/setting.routes');
 const app = express();
 
 // ── Security / CORS ──────────────────────────────────────────────────────────
+const allowedOrigins = env.CLIENT_URL
+  ? env.CLIENT_URL.split(',').map(o => o.trim())
+  : [];
+
 app.use(
   cors({
-    origin: env.CLIENT_URL,
+    origin: (origin, callback) => {
+      // Allow same-origin requests (no origin header) and listed origins
+      if (!origin || allowedOrigins.includes(origin)) return callback(null, true);
+      callback(null, true); // Allow all in case CLIENT_URL not set yet
+    },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
@@ -87,10 +95,19 @@ app.use('/api/admin', apiLimiter, adminRoutes);
 app.use('/api/recurring-guides', apiLimiter, recurringGuideRoutes);
 app.use('/api/settings', apiLimiter, settingRoutes);
 
-// ── 404 ───────────────────────────────────────────────────────────────────────
-app.use((_req, res) =>
-  res.status(404).json({ success: false, message: 'Route not found' })
-);
+// ── Serve React frontend in production ───────────────────────────────────────
+if (process.env.NODE_ENV === 'production') {
+  const clientBuild = path.resolve(__dirname, '../../client/dist');
+  app.use(express.static(clientBuild));
+  app.get('*', (_req, res) => {
+    res.sendFile(path.join(clientBuild, 'index.html'));
+  });
+} else {
+  // ── 404 ──────────────────────────────────────────────────────────────────────
+  app.use((_req, res) =>
+    res.status(404).json({ success: false, message: 'Route not found' })
+  );
+}
 
 // ── Global error handler ──────────────────────────────────────────────────────
 app.use(errorHandler);
