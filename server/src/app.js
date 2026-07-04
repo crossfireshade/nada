@@ -95,19 +95,14 @@ app.use('/api/admin', apiLimiter, adminRoutes);
 app.use('/api/recurring-guides', apiLimiter, recurringGuideRoutes);
 app.use('/api/settings', apiLimiter, settingRoutes);
 
-// ── Serve React frontend in production ───────────────────────────────────────
-if (process.env.NODE_ENV === 'production') {
-  const clientBuild = path.resolve(__dirname, '../../client/dist');
-  app.use(express.static(clientBuild));
-  app.get('*', (_req, res) => {
-    res.sendFile(path.join(clientBuild, 'index.html'));
+// ── Serve React frontend ─────────────────────────────────────────────────────
+const clientBuild = path.resolve(__dirname, '../../client/dist');
+app.use(express.static(clientBuild));
+app.get('*', (_req, res) => {
+  res.sendFile(path.join(clientBuild, 'index.html'), err => {
+    if (err) res.status(404).json({ success: false, message: 'Route not found' });
   });
-} else {
-  // ── 404 ──────────────────────────────────────────────────────────────────────
-  app.use((_req, res) =>
-    res.status(404).json({ success: false, message: 'Route not found' })
-  );
-}
+});
 
 // ── Global error handler ──────────────────────────────────────────────────────
 app.use(errorHandler);
