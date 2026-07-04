@@ -1,7 +1,7 @@
 [build]
-buildCommand = "cd client && npm install && npm run build && cd ../server && npm install"
+buildCommand = "npm run build"
 
 [deploy]
-startCommand = "cd server && node src/server.js"
+startCommand = "npm start"
 healthcheckPath = "/api/health"
 healthcheckTimeout = 60
