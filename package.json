@@ -6,6 +6,6 @@
     "start": "cd server && npm install && node src/server.js"
   },
   "engines": {
-    "node": ">=18.0.0"
+    "node": ">=20.9.0"
   }
 }
